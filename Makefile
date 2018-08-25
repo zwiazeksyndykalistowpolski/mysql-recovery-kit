@@ -1,5 +1,3 @@
-.PHONY: silent
-
 help:
 	@echo " >> make all				Clean up, build containers and run recovery"
 	@echo " >> make all_without_build		Clean up, run the recovery (using container from docker hub)"
