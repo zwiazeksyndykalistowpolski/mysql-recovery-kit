@@ -7,7 +7,8 @@ apply_patch () {
 prepare () {
     echo "[client]" > /etc/mysql/my.cnf
     echo "host	= ${MYSQL_HOST}" >> /etc/mysql/my.cnf
-    echo "password	= ${MYSQL_PASSWORD}" >> /etc/mysql/my.cnf
+    echo "password	= root" >> /etc/mysql/my.cnf
+    echo "user	= root" >> /etc/mysql/my.cnf
     echo "port		= 3306" >> /etc/mysql/my.cnf
 }
 

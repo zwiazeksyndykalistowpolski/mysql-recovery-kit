@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y wget tar bash make build-essential proc
 
 RUN apt-get update \
     && apt-get install -y libncurses5-dev automake1.10 libc6-dev libmysqlclient-dev libmysql++-dev libmysqld-dev \
-                          libncurses5 perl libdbi-perl \
+                          libncurses5 perl libdbi-perl mysql-client nano vim \
                           libdbd-mysql libdbd-mysql-perl \
     && cd /opt/percona-data-recovery-tool-for-innodb-0.5 && make
 
