@@ -1,11 +1,25 @@
 #!/bin/bash
 
+apply_patch () {
+    sed -i 's/if( $db_socket != "" ){/if( $db_socket == "" ){/g' /opt/percona-data-recovery-tool-for-innodb-0.5/create_defs.pl
+}
+
+prepare () {
+    echo "[client]" > /etc/mysql/my.cnf
+    echo "host	= ${MYSQL_HOST}" >> /etc/mysql/my.cnf
+    echo "password	= ${MYSQL_PASSWORD}" >> /etc/mysql/my.cnf
+    echo "port		= 3306" >> /etc/mysql/my.cnf
+}
+
 wait_for_mysql_to_get_up () {
     while ! nc -z "${MYSQL_HOST}" 3306; do
         echo " ~> Waiting 0.5 second for MySQL to get up on ${MYSQL_HOST}:3306"
         echo "    If it takes too long then something may be wrong in your database configuration"
         sleep 0.5
     done
+
+    echo " >> Waiting 5 seconds, just to be sure"
+    sleep 5
 }
 
 do_the_recovery () {
@@ -83,6 +97,8 @@ give_some_time_to_inspect () {
     sleep 3600
 }
 
+apply_patch
+prepare
 wait_for_mysql_to_get_up
 do_the_recovery
 give_some_time_to_inspect

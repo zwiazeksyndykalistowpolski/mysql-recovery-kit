@@ -13,7 +13,7 @@ services:
             - MYSQL_USER=recovery
 
     db_recovery:
-        image: wolnosciowiec/mysql-recovery-kit
+        image: wolnosciowiec/mysql-recovery-kit:bzr-trunk
         volumes:
           - "./mysql-bin-data:/data"
           - "./recovered:/recovered"

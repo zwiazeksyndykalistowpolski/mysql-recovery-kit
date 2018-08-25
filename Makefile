@@ -11,7 +11,7 @@ all: clean build_docker_image start
 all_without_build: clean start
 
 build_docker_image:
-	sudo docker build . -t wolnosciowiec/mysql-recovery-kit
+	sudo docker build . -t wolnosciowiec/mysql-recovery-kit:bzr-trunk
 
 get_into_recovery_container:
 	sudo docker-compose exec db_recovery /bin/bash -c "cd /opt/percona* && /bin/bash"
