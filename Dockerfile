@@ -6,8 +6,9 @@ ENV MYSQL_DATABASE="db"
 ENV MYSQL_TABLES="t1,t2"
 ENV MYSQL_VERSION=5
 ENV MYSQL_HOST="db_with_structure"
+ENV USE_PAGE_PARSER=1
 
-RUN apt-get update && apt-get install -y wget tar bash make build-essential procps automake \
+RUN apt-get update && apt-get install -y wget tar bash make build-essential procps automake netcat file \
     && mkdir -p /opt \
     && wget https://launchpad.net/percona-data-recovery-tool-for-innodb/trunk/release-0.5/+download/percona-data-recovery-tool-for-innodb-0.5.tar.gz -O /opt/innodb-recovery.tar.gz \
     && cd /opt && tar xvf innodb-recovery.tar.gz \
@@ -16,7 +17,7 @@ RUN apt-get update && apt-get install -y wget tar bash make build-essential proc
 
 RUN apt-get update \
     && apt-get install -y libncurses5-dev automake1.10 libc6-dev \
-                          libncurses5 perl libdbi-perl file \
+                          libncurses5 perl libdbi-perl \
                           libdbd-mysql libdbd-mysql-perl \
     && cd /opt/percona-data-recovery-tool-for-innodb-0.5 && make
 

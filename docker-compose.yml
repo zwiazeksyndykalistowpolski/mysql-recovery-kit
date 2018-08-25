@@ -12,7 +12,7 @@ services:
             - MYSQL_USER=recovery
 
     db_recovery:
-        image: wolnosciowiec/mysql-recovery-kit:latest
+        image: wolnosciowiec/mysql-recovery-kit
         volumes:
           - "./mysql-bin-data:/data"
           - "./recovered:/recovered"
@@ -26,6 +26,7 @@ services:
             - MYSQL_PASSWORD=recovery
             - MYSQL_HOST=db_with_structure
             - MYSQL_VERSION=5
+            - USE_PAGE_PARSER=${USE_PAGE_PARSER}
         links:
             - db_with_structure
         depends_on:
