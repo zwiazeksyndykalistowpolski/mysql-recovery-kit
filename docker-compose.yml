@@ -5,6 +5,7 @@ services:
         volumes:
             - "./database-dumps:/docker-entrypoint-initdb.d"
             - "/recovery-dumps:/opt/percona-data-recovery-tool-for-innodb-0.5/dumps"
+            - "./recovered:/recovered"
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=recovery

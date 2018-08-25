@@ -14,7 +14,7 @@ build_docker_image:
 	sudo docker build . -t wolnosciowiec/mysql-recovery-kit
 
 get_into_recovery_container:
-	sudo docker-compose exec db_recovery /bin/bash
+	sudo docker-compose exec db_recovery /bin/bash -c "cd /opt/percona* && /bin/bash"
 
 start:
 	sudo docker-compose rm

@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# verbose mode
-set -x
-
 wait_for_mysql_to_get_up () {
     while ! nc -z "${MYSQL_HOST}" 3306; do
         echo " ~> Waiting 0.5 second for MySQL to get up on ${MYSQL_HOST}:3306"
@@ -40,18 +37,44 @@ do_the_recovery () {
         done
 
         if [[ ${USE_PAGE_PARSER} == 1 ]]; then
-            echo " >> Using page_parser"
-            /bin/bash -c "./page_parser ${ibdata_args} -${MYSQL_VERSION}" > "/logs/${table}-pages.log"
+            recover_with_page_split "${ibdata_args}" "${table}"
+            break
         fi
 
-        echo "   + Recovering the data"
-        /bin/bash -c "./constraints_parser ${ibdata_args} -${MYSQL_VERSION}" > "/recovered/${table}.txt"
-
-        if [[ $? != 0 ]]; then
-            echo "    !!! Error: Cannot recover data for ${table}"
-            continue
-        fi
+        recover_without_page_split "${ibdata_args}" "${table}"
     done
+}
+
+recover_with_page_split () {
+    ibdata_args=$1
+    table=$2
+
+    set -x
+
+    echo " >> Using page_parser"
+    /bin/bash -c "./page_parser ${ibdata_args} -${MYSQL_VERSION}" > "/logs/${table}-pages.log"
+
+    for page in $(ls pages-*/FIL_PAGE_TYPE_BLOB/*)
+    do
+        echo " >> Recovering page ${page} for table ${table}"
+        /bin/bash -c "./constraints_parser -f ${page} -${MYSQL_VERSION}" >> "/recovered/${table}_page.sql"
+    done
+
+    set +x
+}
+
+recover_without_page_split () {
+    ibdata_args=$1
+    table=$2
+
+    echo "   + Recovering the data" && set -x
+    /bin/bash -c "./constraints_parser ${ibdata_args} -${MYSQL_VERSION}" > "/recovered/${table}.txt"
+    set +x
+
+    if [[ $? != 0 ]]; then
+        echo "    !!! Error: Cannot recover data for ${table}"
+        continue
+    fi
 }
 
 give_some_time_to_inspect () {
