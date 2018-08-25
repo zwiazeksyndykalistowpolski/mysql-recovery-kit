@@ -1,0 +1,39 @@
+version: "2.0"
+services:
+    db_with_structure:
+        image: mariadb:10
+        volumes:
+            - "./database-dumps:/docker-entrypoint-initdb.d"
+            - "/recovery-dumps:/opt/percona-data-recovery-tool-for-innodb-0.5/dumps"
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=recovery
+            - MYSQL_PASSWORD=recovery
+            - MYSQL_USER=recovery
+
+    db_recovery:
+        image: wolnosciowiec/mysql-recovery-kit:latest
+        volumes:
+          - "./mysql-bin-data:/data"
+          - "./recovered:/recovered"
+          - "./logs:/logs"
+          - "./workdir:/workdir"
+          - "/recovery-dumps:/opt/percona-data-recovery-tool-for-innodb-0.5/dumps"
+        environment:
+            - MYSQL_TABLES=${MYSQL_TABLES}
+            - MYSQL_DATABASE=recovery
+            - MYSQL_USER=recovery
+            - MYSQL_PASSWORD=recovery
+            - MYSQL_HOST=db_with_structure
+            - MYSQL_VERSION=5
+        links:
+            - db_with_structure
+        depends_on:
+            - db_with_structure
+
+    db_mysql_admin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "9005:80"
+        environment:
+            - PMA_HOST=db_with_structure

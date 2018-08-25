@@ -1,0 +1,16 @@
+/logs/*
+!/logs/README.md
+
+/mysql-bin-data/*
+!/mysql-bin-data/README.md
+
+/database-dumps/*
+!/database-dumps/README.md
+
+/recovered/*
+!/recovered/README.md
+
+/recovery-dumps/*
+!/recovery-dumps/README.md
+
+/.idea
